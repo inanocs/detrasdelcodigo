@@ -29,4 +29,10 @@ public class Tag implements Serializable {
 	@Lob
 	private String descripcion;
 
+	public Tag(Long idtag) {
+		this.idtag = idtag;
+	}
+	
+	
+
 }

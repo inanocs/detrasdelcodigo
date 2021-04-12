@@ -3,6 +3,7 @@ package com.detrasdelcodigo.api.services;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.detrasdelcodigo.api.model.Rol;
@@ -18,9 +19,15 @@ public class UsuarioService extends BaseService<Usuario,Long,UsuarioRepository> 
 	
 	@Autowired
 	private RolService rolService;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
-	public Usuario save(Usuario user) {
+	public Optional<Usuario> findUsuarioByUsernameOpt(String username){
 		
+		return repositorio.findUsuarioByUsernameOpt(username);
+	}
+	
+	public Usuario nuevoUsuario(Usuario user) {
 		if(repositorio.findUsuarioByUsername(user.getUsername())!=null) {
 			throw new UsuarioExisteException("El usuario ya existe");
 		}
@@ -37,15 +44,15 @@ public class UsuarioService extends BaseService<Usuario,Long,UsuarioRepository> 
 			throw new UsuariosException("La contraseña no debe estar vacía");
 		}
 		
-		Optional<Rol> rol = rolService.findById(1L);
+		 Rol rol = rolService.findById(1L).orElseThrow(()->new UsuariosException("El rol no existe"));
 		
-		user.setRol(rol.get());
+		user.setRol(rol);
 		
-		AesEncryptor encriptador = new AesEncryptor();
-		user.setPassword(encriptador.getAESEncrypt(password));
+		user.setPassword(passwordEncoder.encode(password));
 		
-		return repositorio.save(user);
+		return save(user);
 	}
+	
 	
 	public Usuario edit(Usuario user) {
 		

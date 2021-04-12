@@ -1,10 +1,15 @@
 package com.detrasdelcodigo.api.dto.converters;
 
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.detrasdelcodigo.api.dto.CrearPostDto;
 import com.detrasdelcodigo.api.dto.PostDto;
+import com.detrasdelcodigo.api.model.Categoria;
 import com.detrasdelcodigo.api.model.Post;
+import com.detrasdelcodigo.api.model.Tag;
 
 @Component
 public class PostDtoConverter {
@@ -24,7 +29,21 @@ public class PostDtoConverter {
 				.contenido(p.getContenido())
 				.titulo(p.getTitulo())
 				.portada(p.getPortada())
-				.usuario(wantUserInfo ? userDtoConverter.convertToDto(p.getUsuario(),false): null)
+				.tags(p.getTags())
+				.usuario(wantUserInfo ? userDtoConverter.convertToDto(p.getUsuario()): null)
+				.build();
+	}
+	
+	public Post convertDtoToPost(CrearPostDto postDto) {
+		
+		return Post.builder()
+				.titulo(postDto.getTitulo())
+				.categoria(new Categoria(postDto.getIdcategoria()))
+				.portada(postDto.getPortada())
+				.descripcion(postDto.getDescripcion())
+				.tags(
+					postDto.getIdTags().stream().map(tag->new Tag(tag)).collect(Collectors.toList()) )
+				.contenido(postDto.getContenido())
 				.build();
 	}
 

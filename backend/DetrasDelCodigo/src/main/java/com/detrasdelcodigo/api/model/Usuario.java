@@ -1,9 +1,14 @@
 package com.detrasdelcodigo.api.model;
 
-import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,6 +18,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,10 +38,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name="usuarios")
 @NamedQuery(name="Usuario.findAll", query="SELECT u FROM Usuario u")
-public class Usuario implements Serializable {
+public class Usuario implements UserDetails {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -49,6 +60,7 @@ public class Usuario implements Serializable {
 
 	private String password;
 
+	@Column(unique=true)
 	private String username;
 
 	//bi-directional many-to-one association to Comentario
@@ -93,6 +105,46 @@ public class Usuario implements Serializable {
 		return post;
 	}
 
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		
+		Set<UserRole> roles = new HashSet<UserRole>();
+		
+		
+		roles.add(UserRole.USER);
+		
+		return roles.stream().map(ur -> new SimpleGrantedAuthority("ROLE_" + ur.name())).collect(Collectors.toList());
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	
+	public String getFullname() {
+		
+		return this.nombre+" "+this.apellidos;
+	}
 	
 
 }

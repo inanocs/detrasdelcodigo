@@ -2,8 +2,10 @@ package com.detrasdelcodigo.api.dto;
 
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.detrasdelcodigo.api.model.Categoria;
+import com.detrasdelcodigo.api.model.Tag;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -36,4 +38,6 @@ public class PostDto {
 	
 	@JsonManagedReference
 	private UsuarioDto usuario;
+	
+	private List<Tag> tags;
 }

@@ -21,6 +21,7 @@ import com.detrasdelcodigo.api.model.Post;
 import com.detrasdelcodigo.api.model.Tag;
 import com.detrasdelcodigo.api.services.CategoriaService;
 import com.detrasdelcodigo.api.services.PostService;
+import com.prueba.api.errors.PostNotFoundException;
 
 @RequestMapping("/posts/")
 @RestController
@@ -46,10 +47,29 @@ public class PostController {
 			idCategorias = categoriaService.findAll().stream().map(c -> c.getIdcategoria())
 					.collect(Collectors.toList());
 		}
-		Page<PostDto> posts = postService.findAllFilterDto("%" + titulo + "%", username, idCategorias, tags,pageable);
-
+		Page<PostDto> posts = postService.findAllFilterDto("%" + titulo + "%", username, idCategorias, tags, pageable);
 
 		return ResponseEntity.ok(posts);
+
+	}
+
+	@GetMapping("/{idpost}")
+	public ResponseEntity<?> getPostById(@PathVariable Long idpost) {
+
+		PostDto post = postConverter.convertToDto(postService.findById(idpost)
+				.orElseThrow(() -> new PostNotFoundException("No se ha encontrado el post con id: " + idpost)), true);
+
+		return ResponseEntity.ok(post);
+
+	}
+
+	@GetMapping("/{username}/{idpost}")
+	public ResponseEntity<?> getPostByIdAndUsername(@PathVariable String username, @PathVariable Long idpost) {
+
+		PostDto post = postConverter.convertToDto(postService.findByIdAndUsuario(idpost, username)
+				.orElseThrow(() -> new PostNotFoundException("No se ha encontrado el post con id: " + idpost)), true);
+
+		return ResponseEntity.ok(post);
 
 	}
 
@@ -89,7 +109,6 @@ public class PostController {
 			postsFilter = new PageImpl<PostDto>(postsList, pageable, postsList.size());
 
 		}
-
 
 		return ResponseEntity.ok(postsFilter);
 

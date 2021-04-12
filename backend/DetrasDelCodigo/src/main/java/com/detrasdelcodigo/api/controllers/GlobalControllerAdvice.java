@@ -11,6 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.prueba.api.errors.ApiError;
 import com.prueba.api.errors.CategoriaExistsException;
 import com.prueba.api.errors.CategoriaNotFoundException;
+import com.prueba.api.errors.PostNotFoundException;
 import com.prueba.api.errors.ProductoNotFoundException;
 import com.prueba.api.errors.UsuarioExisteException;
 import com.prueba.api.errors.UsuariosException;
@@ -20,6 +21,14 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(ProductoNotFoundException.class)
 	public ResponseEntity<ApiError> handleProductoNoEncontrado(ProductoNotFoundException e) {
+
+		ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, e.getMessage());
+
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
+	}
+	
+	@ExceptionHandler(PostNotFoundException.class)
+	public ResponseEntity<ApiError> handlePostNoEncontrado(PostNotFoundException e) {
 
 		ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, e.getMessage());
 

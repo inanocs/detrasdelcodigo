@@ -1,6 +1,7 @@
 package com.detrasdelcodigo.api.services;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,5 +68,11 @@ public class PostService extends BaseService<Post, Long, PostRepository> {
 		
 		return postsFilter;
 
+	}
+	
+	public Optional<Post> findByIdAndUsuario(Long idpost,String username){
+		
+		
+		return repositorio.findByIdAndUsuario(idpost, username);
 	}
 }
