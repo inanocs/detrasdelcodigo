@@ -3,6 +3,7 @@ package com.detrasdelcodigo.api.model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,8 +13,6 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-
-import org.springframework.data.annotation.CreatedDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,8 +41,7 @@ public class Comentario implements Serializable {
 	@Lob
 	private String contenido;
 	
-//	@Column(columnDefinition = "TIMESTAMP")
-	@CreatedDate
+	@Column(columnDefinition = "TIMESTAMP")
 	private LocalDateTime createdAt;
 
 	//bi-directional many-to-one association to Post

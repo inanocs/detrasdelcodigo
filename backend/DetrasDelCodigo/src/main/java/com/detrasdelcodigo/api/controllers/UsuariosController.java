@@ -1,5 +1,6 @@
 package com.detrasdelcodigo.api.controllers;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,23 +21,19 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import com.detrasdelcodigo.api.dto.CrearPostDto;
 import com.detrasdelcodigo.api.dto.CrearUsuarioDto;
 import com.detrasdelcodigo.api.dto.PostDto;
-import com.detrasdelcodigo.api.dto.UpdatePostDto;
 import com.detrasdelcodigo.api.dto.UsuarioDto;
 import com.detrasdelcodigo.api.dto.converters.PostDtoConverter;
 import com.detrasdelcodigo.api.dto.converters.UsuarioDtoConverter;
+import com.detrasdelcodigo.api.model.Post;
 import com.detrasdelcodigo.api.model.Usuario;
 import com.detrasdelcodigo.api.services.CategoriaService;
 import com.detrasdelcodigo.api.services.PostService;
 import com.detrasdelcodigo.api.services.UsuarioService;
-import com.detrasdelcodigo.api.upload.StorageService;
 import com.prueba.api.errors.PostNotFoundException;
 import com.prueba.api.errors.UsuariosException;
 
@@ -55,9 +51,6 @@ public class UsuariosController {
 
 	@Autowired
 	private CategoriaService categoriaService;
-
-	@Autowired
-	private StorageService storageService;
 
 	@Autowired
 	private PostService postService;
@@ -141,68 +134,32 @@ public class UsuariosController {
 
 		return ResponseEntity.ok(posts);
 	}
-
+	
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/me/posts/{idpost}")
 	public ResponseEntity<?> getPostsByIdPostUsernameLoged(@AuthenticationPrincipal Usuario usuario,
 			@PathVariable Long idpost) {
 
-		PostDto post = postConverter.convertToDto(postService.findByIdAndUsuario(idpost, usuario.getUsername())
-				.orElseThrow(() -> new PostNotFoundException("No se ha encontrado el post con id: " + idpost)), true);
+		
+		PostDto post = postConverter.convertToDto(postService.findByIdAndUsuario(idpost,usuario.getUsername()).orElseThrow(()->new PostNotFoundException("No se ha encontrado el post con id: "+idpost)), true);
 
 		return ResponseEntity.ok(post);
 	}
 
+
 	@PreAuthorize("isAuthenticated()")
-	@PostMapping(value = "/me/posts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<?> altaPost(@AuthenticationPrincipal Usuario usuario, 
-			@RequestPart(name = "img", required = false) MultipartFile img,
-			@RequestPart CrearPostDto post) {
-		
-		
+	@PostMapping("/me/posts")
+	public ResponseEntity<?> altaPost(@AuthenticationPrincipal Usuario usuario, @RequestBody CrearPostDto post) {
 
-		String urlImagen = null;
-
-		if (img != null && !img.isEmpty()) {
-
-			String imagen = storageService.store(img);
-
-			urlImagen = MvcUriComponentsBuilder.fromMethodName(FicherosController.class, "serveFile", imagen, null)
-					.build().toUriString();
-			post.setPortada("/files/" + imagen);
-		}
-
-		
-		PostDto postDto = postConverter.convertToDto(postService.createPost(post, usuario),true);
+		Post postACrear = postConverter.convertDtoToPost(post);
+		postACrear.setUsuario(usuario);
+		postACrear.setCreatedAt(LocalDateTime.now());
+		Post postCreado = postService.save(postACrear);
+		PostDto postDto = postConverter.convertToDto(postService.findById(postCreado.getIdpost()).orElseThrow(
+				() -> new PostNotFoundException("No se ha encontrado el post con id: " + postCreado.getIdpost())),
+				true);
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(postDto);
 	}
-	
-	@PreAuthorize("isAuthenticated()")
-	@PutMapping(value = "/me/posts/{idpost}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<?> ActualizacionPost(@AuthenticationPrincipal Usuario usuario, 
-			@RequestPart(name = "img",required = false) MultipartFile img,
-			@RequestPart UpdatePostDto post,
-			@PathVariable Long idpost) {
-		
-		
-
-		String urlImagen = null;
-
-		if (img != null && !img.isEmpty()) {
-
-			String imagen = storageService.store(img);
-
-			urlImagen = MvcUriComponentsBuilder.fromMethodName(FicherosController.class, "serveFile", imagen, null)
-					.build().toUriString();
-			post.setPortada("/files/" + imagen);
-		}
-
-		post.setIdpost(idpost);
-		PostDto postDto = postConverter.convertToDto(postService.updatePost(post, usuario),true);
-
-		return ResponseEntity.status(HttpStatus.CREATED).body(postDto);
-	}
-	
 
 }
