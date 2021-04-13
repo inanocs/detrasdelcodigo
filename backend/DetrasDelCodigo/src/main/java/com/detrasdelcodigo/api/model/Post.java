@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -18,6 +17,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.springframework.data.annotation.CreatedDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,7 +45,8 @@ public class Post implements Serializable {
 
 	@Lob
 	private String contenido;
-	@Column(columnDefinition = "TIMESTAMP")
+//	@Column(columnDefinition = "TIMESTAMP")
+	@CreatedDate
 	private LocalDateTime createdAt;
 
 	private String descripcion;
