@@ -1,3 +1,11 @@
 module.exports = {
-  lintOnSave: false
-}
+  lintOnSave: false,
+
+  devServer: {
+    port: 9001,
+  },
+
+  transpileDependencies: [
+    'vuetify'
+  ]
+};
