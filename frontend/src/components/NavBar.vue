@@ -83,8 +83,12 @@
           >
             <template v-slot:activator="{ on }">
               <v-btn icon x-large v-on="on">
-                <v-avatar color="brown" size="42">
-                  <img :src="loginUser.avatar" :alt="loginUser.username" />
+                <v-avatar class="cover" color="brown" size="42">
+                  <img
+                    class="cover"
+                    :src="loginUser.avatar"
+                    :alt="loginUser.username"
+                  />
                   <!-- <span class="white--text headline">{{loginUser.username }}</span> -->
                 </v-avatar>
               </v-btn>
@@ -98,7 +102,9 @@
                     }}</span>
                   </v-avatar>
                   <h3>{{ loginUser.nombre }}</h3>
-                  <p class="caption mt-1">@{{ loginUser.username }}</p>
+                  <v-chip color="black" small class="white--text"
+                    >@{{ loginUser.username }}</v-chip
+                  >
                   <v-divider class="my-3"></v-divider>
                   <v-btn
                     :to="{ path: `/users/${loginUser.username}` }"

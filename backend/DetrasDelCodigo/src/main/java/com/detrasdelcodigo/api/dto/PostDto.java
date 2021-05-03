@@ -40,4 +40,6 @@ public class PostDto {
 	private UsuarioDto usuario;
 	
 	private List<Tag> tags;
+
+	private List<ComentarioDto> comentarios;
 }

@@ -65,6 +65,13 @@ const routes = [
       import(/* webpackChunkName: "about" */ "../views/PostView.vue"),
   },
   {
+    path: "/categorias/",
+    name: "categorias",
+    meta: { title: "Categorías" },
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/Categorias.vue"),
+  },
+  {
     path: "*",
     name: "NotFound",
     meta: { title: "404 - NOT FOUND" },

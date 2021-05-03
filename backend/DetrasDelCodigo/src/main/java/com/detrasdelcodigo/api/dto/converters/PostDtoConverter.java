@@ -1,11 +1,13 @@
 package com.detrasdelcodigo.api.dto.converters;
 
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import com.detrasdelcodigo.api.dto.ComentarioDto;
 import com.detrasdelcodigo.api.dto.CrearPostDto;
 import com.detrasdelcodigo.api.dto.PostDto;
 import com.detrasdelcodigo.api.dto.UpdatePostDto;
@@ -20,6 +22,8 @@ public class PostDtoConverter {
 	
 	@Autowired
 	private UsuarioDtoConverter userDtoConverter;
+	@Autowired
+	private ComentarioDtoConverter comentarioDtoConverter;
 	
 	@Autowired 
 	private Environment env;
@@ -33,9 +37,10 @@ public class PostDtoConverter {
 				.idpost(p.getIdpost())
 				.contenido(p.getContenido())
 				.titulo(p.getTitulo())
-				.portada(env.getProperty("app.baseurl")+p.getPortada())
+				.portada(p.getPortada() != null ? env.getProperty("app.baseurl")+p.getPortada(): env.getProperty("app.baseurl")+"/files/default.png")
 				.tags(p.getTags())
 				.usuario(wantUserInfo ? userDtoConverter.convertToDto(p.getUsuario()): null)
+				.comentarios(p.getComentarios() !=null ? p.getComentarios().stream().map(c->comentarioDtoConverter.convertToDto(c)).collect(Collectors.toList()): new ArrayList<ComentarioDto>())
 				.build();
 	}
 	

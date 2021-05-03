@@ -48,4 +48,8 @@ body {
     }
   }
 } */
+
+.cover {
+  object-fit: cover;
+}
 </style>

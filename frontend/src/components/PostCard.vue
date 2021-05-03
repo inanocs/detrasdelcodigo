@@ -45,7 +45,7 @@
           >
             <v-list-item-avatar color="grey darken-3">
               <v-img
-                class="elevation-6"
+                class="elevation-6 cover"
                 alt=""
                 :src="post.usuario.avatar"
               ></v-img>

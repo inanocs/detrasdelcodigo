@@ -11,20 +11,24 @@
                   :src="user.avatar"
                   alt="..."
                   width="130"
-                  class="rounded mb-2 img-thumbnail"
-                /><a
-                  v-if="1 + 1 == 0"
-                  href="#"
-                  class="btn btn-outline-dark btn-sm btn-block"
-                  >Edit profile</a
+                  class="rounded mb-2 img-thumbnail username-profile--avatar"
+                /><button
+                  v-if="puedeEditar"
+                  class="btn btn-danger white--text btn-sm btn-block "
+                  @click.prevent="displayModal('editarperfil')"
                 >
+                  Editar perfil
+                </button>
               </div>
               <div class="media-body mb-5 text-white">
                 <h4 class="mt-0 mb-0">
                   {{ user.nombre }} {{ user.apellidos }}
+                  <v-chip color="primary" small>{{
+                    user.rol.descripcion | capitalize
+                  }}</v-chip>
                 </h4>
                 <p class="small mb-4">
-                  <i class="fas fa-map-marker-alt mr-2"></i>@{{ user.username }}
+                  <v-icon color="white">mdi-account</v-icon>@{{ user.username }}
                 </p>
               </div>
             </div>
@@ -58,7 +62,14 @@
           <div class="py-4 px-4">
             <div class="d-flex align-items-center justify-content-between mb-3">
               <h5 class="mb-0">Últimos posts</h5>
-              <a href="#" class="btn btn-link text-muted">Show all</a>
+              <v-btn
+                v-if="puedeEditar && userposts.length !== 0"
+                color="green"
+                outlined
+                class="ml-5"
+                :to="{ path: '/crearpost' }"
+                >Crea un nuevo post</v-btn
+              >
             </div>
             <div
               class="row"
@@ -69,6 +80,14 @@
               <div class="col-12 warning--text text-center">
                 <v-icon color="warning" class="mr-1">mdi-alert</v-icon>
                 <span>No hay posts</span>
+                <v-btn
+                  v-if="puedeEditar"
+                  color="green"
+                  outlined
+                  class="ml-5"
+                  :to="{ path: '/crearpost' }"
+                  >Crea un nuevo post</v-btn
+                >
               </div>
             </div>
             <div
@@ -154,14 +173,23 @@
         </div>
       </div>
     </div>
+    <ModalComponent
+      :visualization="modalVisualization"
+      :activated="modalActivado"
+      @closeModal="resetModalValues"
+    />
   </v-container>
 </template>
 
 <script>
 import { mapState } from "vuex";
+import ModalComponent from "@/components/ModalComponents.vue";
 const postService = require("../api/posts");
+const authService = require("../api/auth");
+const jwtUtil = require("../util/jwt");
 export default {
   name: "UsernameView",
+  components: { ModalComponent },
   computed: {
     ...mapState({
       user: (state) => state.users.user,
@@ -188,8 +216,12 @@ export default {
       hover: false,
       extradata: null,
       page: 1,
+      puedeEditar: false,
+      modalVisualization: "",
+      modalActivado: false,
     };
   },
+
   async created() {
     this.$store.dispatch("dispatchUser", this.usernameParam);
     this.$store.dispatch("dispatchUserPosts", {
@@ -203,6 +235,15 @@ export default {
     });
 
     this.extradata = await postService.getPostsExtraData(this.usernameParam);
+
+    if (authService.getUserSessionToken()) {
+      const decodedtoken = jwtUtil.decodeToken(
+        authService.getUserSessionToken()
+      );
+      if (decodedtoken.username === this.usernameParam) {
+        this.puedeEditar = true;
+      }
+    }
   },
   methods: {
     leerDatos() {
@@ -220,12 +261,25 @@ export default {
     cambiarPagina() {
       this.leerDatos();
     },
+    displayModal(ruta) {
+      this.modalVisualization = ruta;
+      this.modalActivado = true;
+    },
+    resetModalValues(payload) {
+      this.modalVisualization = "";
+      this.modalActivado = payload;
+    },
   },
   filters: {
     descripcionPost(descripcion) {
       return descripcion.length > 35
         ? `${descripcion.substring(0, 35)}...`
         : descripcion;
+    },
+    capitalize: function(value) {
+      if (!value) return "";
+      value = value.toString();
+      return value.charAt(0).toUpperCase() + value.slice(1);
     },
   },
 };
@@ -275,5 +329,11 @@ body {
 }
 .hover--span {
   font-size: 1.1rem;
+}
+
+.username-profile--avatar {
+  height: 130px;
+  width: 130px;
+  object-fit: cover;
 }
 </style>

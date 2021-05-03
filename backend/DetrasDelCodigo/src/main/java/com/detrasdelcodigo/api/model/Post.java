@@ -90,4 +90,8 @@ public class Post implements Serializable {
 
 		return comentario;
 	}
+	
+	public Post(long idpost) {
+		this.idpost = idpost;
+	}
 }

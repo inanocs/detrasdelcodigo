@@ -28,6 +28,8 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 
 import com.detrasdelcodigo.api.dto.CrearPostDto;
 import com.detrasdelcodigo.api.dto.CrearUsuarioDto;
+import com.detrasdelcodigo.api.dto.EditarPasswordUsuarioDto;
+import com.detrasdelcodigo.api.dto.EditarUsuarioDataDto;
 import com.detrasdelcodigo.api.dto.PostDto;
 import com.detrasdelcodigo.api.dto.UpdatePostDto;
 import com.detrasdelcodigo.api.dto.UsuarioDto;
@@ -155,11 +157,8 @@ public class UsuariosController {
 
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping(value = "/me/posts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<?> altaPost(@AuthenticationPrincipal Usuario usuario, 
-			@RequestPart(name = "img", required = false) MultipartFile img,
-			@RequestPart CrearPostDto post) {
-		
-		
+	public ResponseEntity<?> altaPost(@AuthenticationPrincipal Usuario usuario,
+			@RequestPart(name = "img", required = false) MultipartFile img, @RequestPart CrearPostDto post) {
 
 		String urlImagen = null;
 
@@ -172,20 +171,16 @@ public class UsuariosController {
 			post.setPortada("/files/" + imagen);
 		}
 
-		
-		PostDto postDto = postConverter.convertToDto(postService.createPost(post, usuario),true);
+		PostDto postDto = postConverter.convertToDto(postService.createPost(post, usuario), true);
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(postDto);
 	}
-	
+
 	@PreAuthorize("isAuthenticated()")
 	@PutMapping(value = "/me/posts/{idpost}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<?> ActualizacionPost(@AuthenticationPrincipal Usuario usuario, 
-			@RequestPart(name = "img",required = false) MultipartFile img,
-			@RequestPart UpdatePostDto post,
+	public ResponseEntity<?> ActualizacionPost(@AuthenticationPrincipal Usuario usuario,
+			@RequestPart(name = "img", required = false) MultipartFile img, @RequestPart UpdatePostDto post,
 			@PathVariable Long idpost) {
-		
-		
 
 		String urlImagen = null;
 
@@ -199,10 +194,41 @@ public class UsuariosController {
 		}
 
 		post.setIdpost(idpost);
-		PostDto postDto = postConverter.convertToDto(postService.updatePost(post, usuario),true);
+		PostDto postDto = postConverter.convertToDto(postService.updatePost(post, usuario), true);
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(postDto);
+		return ResponseEntity.status(HttpStatus.OK).body(postDto);
+	}
+
+	@PreAuthorize("isAuthenticated()")
+	@PutMapping(value = "/me/edit/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<?> actualizarAvatarUsuario(@AuthenticationPrincipal Usuario usuario,
+			@RequestPart(name = "img", required = false) MultipartFile img) {
+		
+		Usuario u = userService.actualizarAvatar(img,usuario);
+
+		return ResponseEntity.ok(userConverter.convertToDto(u));
 	}
 	
+	@PreAuthorize("isAuthenticated()")
+	@PutMapping("/me/edit/personaldata")
+	public ResponseEntity<?> actualizarDatosPersonalesUsuario(@AuthenticationPrincipal Usuario usuario,
+			@RequestBody EditarUsuarioDataDto usuarioDto) {
+		
+		Usuario u = userService.actualizarDatosPersonales(usuarioDto, usuario);
+
+		return ResponseEntity.ok(userConverter.convertToDto(u));
+	}
+	
+
+	@PreAuthorize("isAuthenticated()")
+	@PutMapping("/me/edit/password")
+	public ResponseEntity<?> actualizarPasswordsUsuario(@AuthenticationPrincipal Usuario usuario,
+			@RequestBody EditarPasswordUsuarioDto usuarioDto) {
+		
+		userService.actualizarPassword(usuarioDto, usuario);
+
+		return ResponseEntity.noContent().build();
+
+	}
 
 }

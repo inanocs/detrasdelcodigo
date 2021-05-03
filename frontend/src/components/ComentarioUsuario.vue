@@ -8,7 +8,7 @@
       <div class="media g-mb-30 media-comment">
         <router-link :to="{ path: `/users/${comentario.usuario.username}` }">
           <img
-            class="d-flex g-width-50 g-height-50 rounded-circle g-mt-3 g-mr-15"
+            class="d-flex g-width-50 g-height-50 rounded-circle g-mt-3 g-mr-15 cover"
             :src="comentario.usuario.avatar"
             alt="Image Description"
           />

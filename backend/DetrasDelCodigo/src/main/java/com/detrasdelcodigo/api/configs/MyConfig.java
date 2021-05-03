@@ -23,7 +23,7 @@ public class MyConfig {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				
-				registry.addMapping("/users/**").allowedOriginPatterns("http://localhost:9001")
+				registry.addMapping("/**").allowedOriginPatterns("http://localhost:9001")
 				.allowedMethods("GET","POST","PUT","DELETE").maxAge(1800);
 			}
 		};

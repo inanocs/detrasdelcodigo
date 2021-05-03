@@ -27,7 +27,7 @@ public class UsuarioDtoConverter {
 
 		return UsuarioDto.builder().idusuario(u.getIdusuario()).username(u.getUsername()).apellidos(u.getApellidos())
 				.nombre(u.getNombre()).email(u.getEmail())
-				.avatar(u.getAvatar()!=null ? env.getProperty("app.baseurl")+u.getAvatar() : u.getAvatar())
+				.avatar(u.getAvatar()!=null ? env.getProperty("app.baseurl")+u.getAvatar() : env.getProperty("app.baseurl")+"/files/avatar.png")
 				.rol(u.getRol()).build();
 
 	}
@@ -37,7 +37,7 @@ public class UsuarioDtoConverter {
 		return JwtUserResponse.jwtUserResponseBuilder().idusuario(u.getIdusuario()).username(u.getUsername()).apellidos(u.getApellidos())
 				.nombre(u.getNombre()).email(u.getEmail()).posts( u.getPosts().stream()
 						.map(post -> postConverter.convertToDto(post, false)).collect(Collectors.toList()))
-				.avatar(u.getAvatar()!=null ? env.getProperty("app.baseurl")+u.getAvatar() : u.getAvatar())
+				.avatar(u.getAvatar()!=null ? env.getProperty("app.baseurl")+u.getAvatar() :env.getProperty("app.baseurl")+"/files/avatar.png")
 				.rol(u.getRol())
 				.token(jwtToken)
 				.build();

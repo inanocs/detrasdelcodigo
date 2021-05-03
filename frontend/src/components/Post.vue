@@ -9,7 +9,7 @@
       <v-col cols="1">
         <router-link :to="{ path: `/users/${post.usuario.username}` }">
           <v-avatar>
-            <img :src="post.usuario.avatar" alt="" />
+            <img class="cover" :src="post.usuario.avatar" alt="" />
           </v-avatar>
         </router-link>
       </v-col>

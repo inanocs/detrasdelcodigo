@@ -30,7 +30,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		response.setContentType("application/json");
 		
-		ApiError apierror = new ApiError(HttpStatus.UNAUTHORIZED,authException.getMessage());
+		ApiError apierror = new ApiError(HttpStatus.UNAUTHORIZED.value(),HttpStatus.UNAUTHORIZED,authException.getMessage());
 		
 		String strApiError = mapper.writeValueAsString(apierror);
 		

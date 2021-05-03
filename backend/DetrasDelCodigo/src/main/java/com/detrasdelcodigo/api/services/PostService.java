@@ -109,6 +109,16 @@ public class PostService extends BaseService<Post, Long, PostRepository> {
 		
 		return repositorio.save(postAEditar);
 	}
+	
+	public int getTotalComments(String username) {
+		
+		
+		return repositorio.getCommentsByUsername(username).size();
+	}
+	
+	public int getTotalPostsCreated(String username) {
+		return repositorio.findPostsByUsername(username).size();
+	}
 
 	
 }

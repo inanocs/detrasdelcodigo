@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 public class ApiError {
 
 	private HttpStatus estado;
+	private int code;
 
 	@JsonFormat(shape = Shape.STRING, pattern = "dd/MM/yyyy hh:mm:ss")
 	private LocalDateTime fecha = LocalDateTime.now();
@@ -17,6 +18,12 @@ public class ApiError {
 	private String mensaje;
 
 	public ApiError() {
+	}
+	
+	public ApiError(int code, HttpStatus estado, String mensaje) {
+		this.code = code;
+		this.estado = estado;
+		this.mensaje = mensaje;
 	}
 
 	public ApiError(HttpStatus estado, String mensaje) {
@@ -52,6 +59,14 @@ public class ApiError {
 
 	public void setMensaje(String mensaje) {
 		this.mensaje = mensaje;
+	}
+
+	public int getCode() {
+		return code;
+	}
+
+	public void setCode(int code) {
+		this.code = code;
 	}
 
 }

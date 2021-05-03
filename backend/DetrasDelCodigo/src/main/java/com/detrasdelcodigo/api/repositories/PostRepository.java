@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import com.detrasdelcodigo.api.model.Comentario;
 import com.detrasdelcodigo.api.model.Post;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
@@ -24,4 +25,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	
 	@Query("select p from Post p where p.idpost=?1 and p.usuario.username=?2")
 	public Optional<Post> findByIdAndUsuario(Long idpost,String username);
+	@Query("select p.comentarios from Post p where p.usuario.username=?1")
+	public List<Comentario> getCommentsByUsername(String username);
 }

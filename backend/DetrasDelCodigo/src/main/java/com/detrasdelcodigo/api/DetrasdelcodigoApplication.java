@@ -24,9 +24,9 @@ public class DetrasdelcodigoApplication {
 		return args -> {
 			// Inicializamos el servicio de ficheros
 
-			if (env.getProperty("spring.profiles.active").equalsIgnoreCase("dev")) {
-				storageService.deleteAll();
-			}
+//			if (env.getProperty("spring.profiles.active").equalsIgnoreCase("dev")) {
+//				storageService.deleteAll();
+//			}
 
 			storageService.init();
 

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.detrasdelcodigo.api.dto.PostDto;
+import com.detrasdelcodigo.api.dto.PostExtraData;
 import com.detrasdelcodigo.api.dto.converters.PostDtoConverter;
 import com.detrasdelcodigo.api.model.Post;
 import com.detrasdelcodigo.api.model.Tag;
@@ -53,7 +54,7 @@ public class PostController {
 
 	}
 
-	@GetMapping("/{idpost}")
+	@GetMapping("/id/{idpost}")
 	public ResponseEntity<?> getPostById(@PathVariable Long idpost) {
 
 		PostDto post = postConverter.convertToDto(postService.findById(idpost)
@@ -112,6 +113,16 @@ public class PostController {
 
 		return ResponseEntity.ok(postsFilter);
 
+	}
+	
+	@GetMapping("/{username}/extradata/")
+	public ResponseEntity<?> getTotalComentarios(@PathVariable String username){
+		
+		int totalComments = postService.getTotalComments(username);
+		int totalPostsCreated = postService.getTotalPostsCreated(username);
+		
+		return ResponseEntity.ok(new PostExtraData(totalComments,totalPostsCreated,username));
+		
 	}
 
 }

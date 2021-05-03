@@ -14,16 +14,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ComentarioDto {
+public class PostExtraData {
 	
-	private Long idcomentario;
-
-	private String contenido;
-	@JsonFormat(shape = Shape.STRING, pattern = "dd/MM/yyyy hh:mm:ss")
-	private LocalDateTime createdAt;
-	
-	private Long idpost;
-	
-	private UsuarioDto usuario;
+	private int totalPostComments;
+	private int totalPostsCreated;
+	private String username;
 
 }

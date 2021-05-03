@@ -1,6 +1,7 @@
 <template>
   <div class="home">
     <div class="container mt-16">
+      <h1 class="text-center">Nuestros últimos posts</h1>
       <v-overlay :value="posts.posts.content == null">
         <v-progress-circular indeterminate size="64"></v-progress-circular>
       </v-overlay>
@@ -76,7 +77,7 @@ export default {
   },
 
   mounted() {
-    this.$store.dispatch("dispatchPosts");
+    this.$store.dispatch("dispatchPosts", { sort: "createdAt,desc" });
   },
 };
 </script>

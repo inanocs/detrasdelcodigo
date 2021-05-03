@@ -22,7 +22,7 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(ProductoNotFoundException.class)
 	public ResponseEntity<ApiError> handleProductoNoEncontrado(ProductoNotFoundException e) {
 
-		ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, e.getMessage());
+		ApiError apiError = new ApiError(HttpStatus.NOT_FOUND.value(),HttpStatus.NOT_FOUND, e.getMessage());
 
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
 	}
@@ -30,7 +30,7 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(PostNotFoundException.class)
 	public ResponseEntity<ApiError> handlePostNoEncontrado(PostNotFoundException e) {
 
-		ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, e.getMessage());
+		ApiError apiError = new ApiError(HttpStatus.NOT_FOUND.value(),HttpStatus.NOT_FOUND, e.getMessage());
 
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
 	}
@@ -38,7 +38,7 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(UsuarioExisteException.class)
 	public ResponseEntity<ApiError> handleUsuarioExisteException(UsuarioExisteException e) {
 
-		ApiError apiError = new ApiError(HttpStatus.CONFLICT, e.getMessage());
+		ApiError apiError = new ApiError(HttpStatus.CONFLICT.value(),HttpStatus.CONFLICT, e.getMessage());
 
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(apiError);
 	}
@@ -46,7 +46,7 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(UsuariosException.class)
 	public ResponseEntity<ApiError> handleUsuariosException(UsuariosException e) {
 
-		ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, e.getMessage());
+		ApiError apiError = new ApiError(HttpStatus.NOT_FOUND.value(),HttpStatus.NOT_FOUND, e.getMessage());
 
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
 	}
@@ -63,7 +63,7 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(CategoriaNotFoundException.class)
 	public ResponseEntity<ApiError> handleCategoriaNotFoundException(CategoriaNotFoundException e) {
 
-		ApiError error = new ApiError(HttpStatus.NOT_FOUND, e.getMessage());
+		ApiError error = new ApiError(HttpStatus.NOT_FOUND.value(),HttpStatus.NOT_FOUND, e.getMessage());
 
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
 	}
@@ -71,7 +71,7 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(CategoriaExistsException.class)
 	public ResponseEntity<ApiError> handleCategoriaExistsException(CategoriaExistsException e) {
 
-		ApiError error = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage());
+		ApiError error = new ApiError(HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST, e.getMessage());
 
 		return ResponseEntity.badRequest().body(error);
 	}
